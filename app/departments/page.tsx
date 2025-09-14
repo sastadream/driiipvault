@@ -35,7 +35,7 @@ export default async function DepartmentsPage() {
         {departments && departments.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {departments.map((department) => (
-              <Card key={department.id} className="hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <Card key={department.id} className="hover:shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-xl text-foreground">{department.name}</CardTitle>
                   <CardDescription className="text-muted-foreground">

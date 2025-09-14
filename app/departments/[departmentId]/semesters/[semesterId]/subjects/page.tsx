@@ -56,7 +56,7 @@ export default async function SubjectsPage({ params }: SubjectsPageProps) {
         {subjects && subjects.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {subjects.map((subject) => (
-              <Card key={subject.id} className="hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <Card key={subject.id} className="hover:shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-lg text-foreground">{subject.name}</CardTitle>
                   <CardDescription className="text-muted-foreground">

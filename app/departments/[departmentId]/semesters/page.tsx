@@ -58,7 +58,7 @@ export default async function SemestersPage({ params }: SemestersPageProps) {
         {semesters && semesters.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {semesters.map((semester) => (
-              <Card key={semester.id} className="hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <Card key={semester.id} className="hover:shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-lg text-foreground">{semester.name}</CardTitle>
                   <CardDescription className="text-muted-foreground">

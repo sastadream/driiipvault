@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import { Chatbot } from "@/components/chatbot"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -110,6 +111,7 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+      <Chatbot />
     </div>
   )
 }

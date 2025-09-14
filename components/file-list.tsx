@@ -95,7 +95,7 @@ export function FileList({ files, currentUserId }: FileListProps) {
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="text-muted-foreground">{getFileIcon(file.mime_type)}</div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-foreground truncate">{file.name}</div>
+                  <div className="font-medium text-foreground break-words">{file.name}</div>
                   <div className="text-sm text-muted-foreground">
                     {formatFileSize(file.file_size)} • Uploaded by{" "}
                     {file.profiles?.full_name || file.profiles?.email || "Unknown"} •
