@@ -34,12 +34,24 @@ export default async function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">📚 Browse Files</CardTitle>
-              <CardDescription>Access files organized by department, semester, and subject</CardDescription>
+              <CardTitle className="flex items-center gap-2">🏫 Browse Colleges</CardTitle>
+              <CardDescription>Access files organized by college, department, semester, and subject</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/colleges">
+                <Button className="w-full">Browse Colleges</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">📚 Browse Departments</CardTitle>
+              <CardDescription>Access files organized by department, semester, and subject (Legacy)</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/departments">
-                <Button className="w-full">Browse Departments</Button>
+                <Button className="w-full" variant="outline">Browse Departments</Button>
               </Link>
             </CardContent>
           </Card>
@@ -78,26 +90,26 @@ export default async function DashboardPage() {
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardContent className="p-4">
-                <div className="text-2xl font-bold text-primary">10</div>
+                <div className="text-2xl font-bold text-primary">11</div>
+                <div className="text-sm text-muted-foreground">Colleges</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-primary">110</div>
                 <div className="text-sm text-muted-foreground">Departments</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div className="text-2xl font-bold text-primary">80</div>
+                <div className="text-2xl font-bold text-primary">880</div>
                 <div className="text-sm text-muted-foreground">Semesters</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <div className="text-2xl font-bold text-primary">4</div>
+                <div className="text-2xl font-bold text-primary">1,650</div>
                 <div className="text-sm text-muted-foreground">Subjects</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-primary">0</div>
-                <div className="text-sm text-muted-foreground">Files Uploaded</div>
               </CardContent>
             </Card>
           </div>
