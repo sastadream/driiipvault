@@ -83,7 +83,7 @@ export default function LoginPage() {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Welcome to DriiipVault</CardTitle>
           <CardDescription>
-            Sign in to access your files and documents
+            LOG IN to access your files and documents
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -130,10 +130,10 @@ export default function LoginPage() {
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  {isSignUp ? "Creating account..." : "Signing in..."}
+                  {isSignUp ? "Creating account..." : "LOGGING IN..."}
                 </div>
               ) : (
-                isSignUp ? "Create Account" : "Sign In"
+                isSignUp ? "Create Account" : "LOG IN"
               )}
             </Button>
           </form>
@@ -165,7 +165,7 @@ export default function LoginPage() {
                 <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
-              Sign in with Google
+              LOG IN with Google
             </div>
           </Button>
 
@@ -177,7 +177,7 @@ export default function LoginPage() {
               className="text-sm text-blue-600 hover:text-blue-800 underline"
             >
               {isSignUp 
-                ? "Already have an account? Sign in" 
+                ? "Already have an account? LOG IN" 
                 : "Don't have an account? Sign up"
               }
             </button>

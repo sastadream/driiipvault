@@ -14,6 +14,7 @@ interface FileResult {
   name: string
   original_name: string
   file_path: string
+  url?: string
   mime_type: string
   file_size: number
   created_at: string
@@ -34,6 +35,7 @@ export function Chatbot() {
   const [searchResults, setSearchResults] = useState<FileResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [selectedFile, setSelectedFile] = useState<FileResult | null>(null)
+  const [selectedFilePublicUrl, setSelectedFilePublicUrl] = useState<string | null>(null)
 
   const searchFiles = async () => {
     if (!searchQuery.trim()) return
@@ -49,6 +51,7 @@ export function Chatbot() {
           name,
           original_name,
           file_path,
+          url,
           mime_type,
           file_size,
           created_at,
@@ -83,10 +86,15 @@ export function Chatbot() {
 
   const openFile = (file: FileResult) => {
     setSelectedFile(file)
+    // Prefer stored public URL if present; otherwise compute from storage
+    const supabase = createClient()
+    const { data } = supabase.storage.from("files").getPublicUrl(file.file_path)
+    setSelectedFilePublicUrl(data?.publicUrl ?? file.url ?? null)
   }
 
   const closeFileViewer = () => {
     setSelectedFile(null)
+    setSelectedFilePublicUrl(null)
   }
 
   const formatFileSize = (bytes: number) => {
@@ -208,14 +216,14 @@ export function Chatbot() {
             <div className="p-4 max-h-[calc(90vh-120px)] overflow-auto">
               {selectedFile.mime_type.startsWith("image/") ? (
                 <img
-                  src={selectedFile.file_path || "/placeholder.svg"}
+                  src={selectedFilePublicUrl || selectedFile.url || "/placeholder.svg"}
                   alt={selectedFile.original_name}
                   className="max-w-full h-auto mx-auto"
                   crossOrigin="anonymous"
                 />
               ) : selectedFile.mime_type === "application/pdf" ? (
                 <iframe
-                  src={selectedFile.file_path}
+                  src={selectedFilePublicUrl || selectedFile.url || "about:blank"}
                   className="w-full h-96 border-0"
                   title={selectedFile.original_name}
                 />
