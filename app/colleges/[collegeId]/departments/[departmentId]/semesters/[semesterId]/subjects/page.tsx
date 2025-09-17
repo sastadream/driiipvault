@@ -1,9 +1,9 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { FavoriteButton } from "@/components/favorite-button"
 
 interface CollegeDepartmentSemesterSubjectsPageProps {
   params: Promise<{ collegeId: string; departmentId: string; semesterId: string }>
@@ -13,15 +13,12 @@ export default async function CollegeDepartmentSemesterSubjectsPage({ params }: 
   const { collegeId, departmentId, semesterId } = await params
   const supabase = await createClient()
 
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    redirect("/auth/login")
-  }
-
   // Fetch college, department, and semester details
-  const { data: college } = await supabase.from("colleges").select("*").eq("id", collegeId).single()
-  const { data: department } = await supabase.from("departments").select("*").eq("id", departmentId).single()
-  const { data: semester } = await supabase.from("semesters").select("*").eq("id", semesterId).single()
+  const [{ data: college }, { data: department }, { data: semester }] = await Promise.all([
+    supabase.from("colleges").select("id,name").eq("id", collegeId).single(),
+    supabase.from("departments").select("id,name,description").eq("id", departmentId).single(),
+    supabase.from("semesters").select("id,name,description").eq("id", semesterId).single(),
+  ])
 
   if (!college || !department || !semester) {
     notFound()
@@ -30,7 +27,7 @@ export default async function CollegeDepartmentSemesterSubjectsPage({ params }: 
   // Fetch subjects for this semester
   const { data: subjects, error: subError } = await supabase
     .from("subjects")
-    .select("*")
+    .select("id,name,description,created_at")
     .eq("semester_id", semesterId)
     .order("name")
 
@@ -68,11 +65,14 @@ export default async function CollegeDepartmentSemesterSubjectsPage({ params }: 
                     <div className="text-sm text-muted-foreground">
                       Created: {new Date(subject.created_at).toLocaleDateString()}
                     </div>
-                    <Link href={`/colleges/${collegeId}/departments/${departmentId}/semesters/${semesterId}/subjects/${subject.id}/files`}>
-                      <Button className="w-full" size="sm">
-                        View Files
-                      </Button>
-                    </Link>
+                    <div className="flex gap-2">
+                      <Link href={`/colleges/${collegeId}/departments/${departmentId}/semesters/${semesterId}/subjects/${subject.id}/files`} className="flex-1">
+                        <Button className="w-full" size="sm">
+                          View Files
+                        </Button>
+                      </Link>
+                      <FavoriteButton entityType="subject" entityId={subject.id} />
+                    </div>
                   </div>
                 </CardContent>
               </Card>

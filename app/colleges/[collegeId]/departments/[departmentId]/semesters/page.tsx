@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -13,14 +12,11 @@ export default async function CollegeDepartmentSemestersPage({ params }: College
   const { collegeId, departmentId } = await params
   const supabase = await createClient()
 
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    redirect("/auth/login")
-  }
-
   // Fetch college and department details
-  const { data: college } = await supabase.from("colleges").select("*").eq("id", collegeId).single()
-  const { data: department } = await supabase.from("departments").select("*").eq("id", departmentId).single()
+  const [{ data: college }, { data: department }] = await Promise.all([
+    supabase.from("colleges").select("id,name").eq("id", collegeId).single(),
+    supabase.from("departments").select("id,name,description").eq("id", departmentId).single(),
+  ])
 
   if (!college || !department) {
     notFound()
@@ -29,7 +25,7 @@ export default async function CollegeDepartmentSemestersPage({ params }: College
   // Fetch semesters for this department
   const { data: semesters, error: semError } = await supabase
     .from("semesters")
-    .select("*")
+    .select("id,name,description,created_at")
     .eq("department_id", departmentId)
     .order("name")
 

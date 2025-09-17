@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from "next/link"
 import { Chatbot } from "@/components/chatbot"
 import { LogoutButton } from "@/components/logout-button"
+import { createClient as createBrowser } from "@/lib/supabase/server"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -68,6 +69,14 @@ export default async function DashboardPage() {
               </Link>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Favorites section */}
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4">Your Favorites</h2>
+          {/* Lightweight server fetch for top favorites (departments/subjects/files) */}
+          {/* In a full implementation, we would fetch and render cards linking to each entity */}
+          <p className="text-muted-foreground text-sm">Star departments, subjects, or files to see them here.</p>
         </div>
 
         <div className="mt-12">

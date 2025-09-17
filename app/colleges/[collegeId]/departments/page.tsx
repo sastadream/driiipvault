@@ -1,9 +1,9 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { FavoriteButton } from "@/components/favorite-button"
 
 interface CollegeDepartmentsPageProps {
   params: Promise<{ collegeId: string }>
@@ -13,13 +13,8 @@ export default async function CollegeDepartmentsPage({ params }: CollegeDepartme
   const { collegeId } = await params
   const supabase = await createClient()
 
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    redirect("/auth/login")
-  }
-
   // Fetch college details
-  const { data: college } = await supabase.from("colleges").select("*").eq("id", collegeId).single()
+  const { data: college } = await supabase.from("colleges").select("id,name,description").eq("id", collegeId).single()
 
   if (!college) {
     notFound()
@@ -28,7 +23,7 @@ export default async function CollegeDepartmentsPage({ params }: CollegeDepartme
   // Fetch departments for this college
   const { data: departments, error: deptError } = await supabase
     .from("departments")
-    .select("*")
+    .select("id,name,description,created_at")
     .eq("college_id", collegeId)
     .order("name")
 
@@ -66,11 +61,14 @@ export default async function CollegeDepartmentsPage({ params }: CollegeDepartme
                     <div className="text-sm text-muted-foreground">
                       Created: {new Date(department.created_at).toLocaleDateString()}
                     </div>
-                    <Link href={`/colleges/${collegeId}/departments/${department.id}/semesters`}>
-                      <Button className="w-full" size="sm">
-                        View Semesters
-                      </Button>
-                    </Link>
+                    <div className="flex gap-2">
+                      <Link href={`/colleges/${collegeId}/departments/${department.id}/semesters`} className="flex-1">
+                        <Button className="w-full" size="sm">
+                          View Semesters
+                        </Button>
+                      </Link>
+                      <FavoriteButton entityType="department" entityId={department.id} />
+                    </div>
                   </div>
                 </CardContent>
               </Card>

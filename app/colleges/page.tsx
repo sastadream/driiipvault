@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { FavoriteButton } from "@/components/favorite-button"
 
 export default async function CollegesPage() {
   const supabase = await createClient()
@@ -37,7 +38,7 @@ export default async function CollegesPage() {
           </Link>
         </div>
 
-        {colleges && colleges.length > 0 ? (
+            {colleges && colleges.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {colleges.map((college) => (
               <Card key={college.id} className="hover:shadow-lg">
@@ -48,15 +49,18 @@ export default async function CollegesPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-3">
                     <div className="text-sm text-muted-foreground">
                       Code: {college.code}
                     </div>
-                    <Link href={`/colleges/${college.id}/departments`}>
-                      <Button className="w-full" size="sm">
-                        View Departments
-                      </Button>
-                    </Link>
+                        <div className="flex gap-2">
+                          <Link href={`/colleges/${college.id}/departments`} className="flex-1">
+                            <Button className="w-full" size="sm">
+                              View Departments
+                            </Button>
+                          </Link>
+                          <FavoriteButton entityType="college" entityId={college.id} />
+                        </div>
                   </div>
                 </CardContent>
               </Card>

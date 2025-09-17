@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { FavoriteButton } from "@/components/favorite-button"
 
 interface SubjectFilesPageProps {
   params: Promise<{ collegeId: string; departmentId: string; semesterId: string; subjectId: string }>
@@ -88,6 +89,7 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
                       <a href={file.publicUrl} target="_blank" rel="noopener noreferrer" className="w-full">
                         <Button variant="outline" size="sm" className="w-full">View</Button>
                       </a>
+                      <FavoriteButton entityType="file" entityId={file.id} />
                     </div>
                   </div>
                 </CardContent>
