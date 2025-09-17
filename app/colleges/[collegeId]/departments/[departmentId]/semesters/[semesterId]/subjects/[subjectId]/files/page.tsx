@@ -29,15 +29,23 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
   }
 
   // Fetch files for this subject
-  const { data: files, error: filesError } = await supabase
+  const { data: filesRaw, error: filesError } = await supabase
     .from("files")
-    .select("*")
+    .select("id, name, description, file_path, file_size, mime_type, created_at")
     .eq("subject_id", subjectId)
     .order("created_at", { ascending: false })
 
   if (filesError) {
     console.error("Error fetching files:", filesError)
   }
+
+  // Create public URLs (assuming bucket name is "files")
+  const files = await Promise.all(
+    (filesRaw || []).map(async (f) => {
+      const { data: pub } = await supabase.storage.from("files").getPublicUrl(f.file_path)
+      return { ...f, publicUrl: pub.publicUrl }
+    })
+  )
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,34 +80,14 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
                 <CardContent>
                   <div className="flex flex-col gap-3">
                     <div className="text-sm text-muted-foreground">
-                      <div>Size: {file.size ? `${(file.size / 1024).toFixed(1)} KB` : 'Unknown'}</div>
-                      <div>Type: {file.type || 'Unknown'}</div>
+                      <div>Size: {file.file_size ? `${(file.file_size / 1024).toFixed(1)} KB` : 'Unknown'}</div>
+                      <div>Type: {file.mime_type || 'Unknown'}</div>
                       <div>Uploaded: {new Date(file.created_at).toLocaleDateString()}</div>
                     </div>
                     <div className="flex gap-2">
-                      <Button 
-                        className="flex-1" 
-                        size="sm"
-                        onClick={() => {
-                          // Create download link
-                          const link = document.createElement('a')
-                          link.href = file.url
-                          link.download = file.name
-                          link.click()
-                        }}
-                      >
-                        Download
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          // Open file in new tab
-                          window.open(file.url, '_blank')
-                        }}
-                      >
-                        View
-                      </Button>
+                      <a href={file.publicUrl} target="_blank" rel="noopener noreferrer" className="w-full">
+                        <Button variant="outline" size="sm" className="w-full">View</Button>
+                      </a>
                     </div>
                   </div>
                 </CardContent>

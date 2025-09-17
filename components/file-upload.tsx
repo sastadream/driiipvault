@@ -68,6 +68,9 @@ export function FileUpload({ subjectId }: FileUploadProps) {
 
       setUploadProgress(50)
 
+      // Get public URL for the uploaded file
+      const { data: urlData } = supabase.storage.from("files").getPublicUrl(uploadData.path)
+
       // Save file metadata to database
       const { error: dbError } = await supabase.from("files").insert({
         subject_id: subjectId,
@@ -76,6 +79,7 @@ export function FileUpload({ subjectId }: FileUploadProps) {
         file_path: uploadData.path,
         file_size: file.size,
         mime_type: file.type,
+        url: urlData.publicUrl,
         description: description.trim() || null,
         uploaded_by: user.id,
       })

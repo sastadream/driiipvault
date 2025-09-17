@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { Chatbot } from "@/components/chatbot"
+import { LogoutButton } from "@/components/logout-button"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -24,11 +25,7 @@ export default async function DashboardPage() {
             <h1 className="text-3xl font-bold text-foreground">File Management System</h1>
             <p className="text-muted-foreground mt-2">Welcome back, {profile?.full_name || data.user.email}</p>
           </div>
-          <form action="/auth/signout" method="post">
-            <Button variant="outline" type="submit">
-              Sign Out
-            </Button>
-          </form>
+          <LogoutButton />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -40,18 +37,6 @@ export default async function DashboardPage() {
             <CardContent>
               <Link href="/colleges">
                 <Button className="w-full">Browse Colleges</Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">📚 Browse Departments</CardTitle>
-              <CardDescription>Access files organized by department, semester, and subject (Legacy)</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/departments">
-                <Button className="w-full" variant="outline">Browse Departments</Button>
               </Link>
             </CardContent>
           </Card>
