@@ -69,6 +69,7 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
         </div>
 
         {files && files.length > 0 ? (
+          <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {files.map((file) => (
               <Card key={file.id} className="hover:shadow-lg">
@@ -96,12 +97,21 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
               </Card>
             ))}
           </div>
+          <div className="mt-6">
+            <p className="text-sm text-red-600">
+              IF THE FILE YOU WANT IS NOT HERE! JUST CONTACT US — WE WILL ADD THAT FILE WITHIN 2 HOURS. WhatsApp - 6353676040
+            </p>
+          </div>
+          </>
         ) : (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">📁</div>
             <h2 className="text-2xl font-semibold text-foreground mb-2">No Files Found</h2>
             <p className="text-muted-foreground mb-6">
               There are no files available for {subject.name} at the moment.
+            </p>
+            <p className="text-sm text-red-600 mb-6">
+              IF THE FILE YOU WANT IS NOT HERE! JUST CONTACT US — WE WILL ADD THAT FILE WITHIN 2 HOURS. WhatsApp - 6353676040
             </p>
             <div className="flex gap-4 justify-center">
               <Link href={`/upload?subject_id=${subjectId}`}>

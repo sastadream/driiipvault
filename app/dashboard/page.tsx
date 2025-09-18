@@ -44,6 +44,18 @@ export default async function DashboardPage() {
 
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
+              <CardTitle className="flex items-center gap-2">📚 BOOKs</CardTitle>
+              <CardDescription>Browse and upload semester-wise books</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/books">
+                <Button className="w-full" variant="secondary">Open BOOKs</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">📤 Upload Files</CardTitle>
               <CardDescription>Upload new files to share with others</CardDescription>
             </CardHeader>
