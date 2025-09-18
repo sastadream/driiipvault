@@ -83,6 +83,7 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 required
               />
+              <p className="text-xs text-muted-foreground">(if you are new Set your Password)</p>
             </div>
             <Button 
               type="submit"
