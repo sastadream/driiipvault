@@ -28,12 +28,30 @@ export default function LoginPage() {
         password,
       })
       if (error) {
-        const msg = (error.message || "").toLowerCase()
-        if (msg.includes("invalid") || msg.includes("credentials") || msg.includes("password")) {
-          setError("wrong password check again")
-        } else {
-          setError(error.message)
+        // Auto-signup fallback for new users (no explicit signup form)
+        const signUpRes = await supabase.auth.signUp({
+          email,
+          password,
+        })
+
+        if (signUpRes.error) {
+          const se = (signUpRes.error.message || "").toLowerCase()
+          // If the user already exists, then the original error was likely a wrong password
+          if (se.includes("registered") || se.includes("exists")) {
+            setError("wrong password check again")
+          } else {
+            setError(signUpRes.error.message)
+          }
+          return
         }
+
+        // If confirm email is enabled, there may be no session yet
+        if (!signUpRes.data.session) {
+          setError("Account created. Please check your email to confirm and then log in.")
+          return
+        }
+
+        router.push('/dashboard')
       } else {
         router.push('/dashboard')
       }
