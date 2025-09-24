@@ -66,6 +66,10 @@ export default function BookUpload({ semester, subject }: Props) {
       if (dbErr) throw dbErr
 
       setUploadProgress(100)
+
+      // Show success popup
+      alert("Thank you for uploading the file!")
+
       setFile(null)
       setDescription("")
       setUploadProgress(0)

@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import BookUpload from "@/components/book-upload"
+import DeleteFileButton from "@/components/delete-file-button"
 
 interface Props { params: Promise<{ semester: string; subject: string }> }
 
@@ -66,6 +67,7 @@ export default async function BooksSubjectPage({ params }: Props) {
                         <a href={file.publicUrl} target="_blank" rel="noopener noreferrer" className="w-full">
                           <Button variant="outline" size="sm" className="w-full">View</Button>
                         </a>
+                        <DeleteFileButton table="books_files" id={file.id} filePath={file.file_path} />
                       </div>
                     </div>
                   </CardContent>

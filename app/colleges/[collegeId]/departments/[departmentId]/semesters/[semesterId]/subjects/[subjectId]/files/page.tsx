@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { FavoriteButton } from "@/components/favorite-button"
+import DeleteFileButton from "@/components/delete-file-button"
 
 interface SubjectFilesPageProps {
   params: Promise<{ collegeId: string; departmentId: string; semesterId: string; subjectId: string }>
@@ -91,6 +92,8 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
                         <Button variant="outline" size="sm" className="w-full">View</Button>
                       </a>
                       <FavoriteButton entityType="file" entityId={file.id} />
+                      {/* Admin-only delete is enforced by RLS, button will error for non-admins */}
+                      <DeleteFileButton table="files" id={file.id} filePath={file.file_path} />
                     </div>
                   </div>
                 </CardContent>

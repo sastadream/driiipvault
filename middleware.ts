@@ -9,6 +9,10 @@ const PUBLIC_PATHS: (string | RegExp)[] = [
   /^\/colleges\/[^/]+\/departments\/[^/]+\/semesters$/,
   /^\/colleges\/[^/]+\/departments\/[^/]+\/semesters\/[^/]+\/subjects$/,
   /^\/colleges\/[^/]+\/departments\/[^/]+\/semesters\/[^/]+\/subjects\/[^/]+\/files$/,
+  // Books section (public browse)
+  "/books",
+  /^\/books\/[\w%\- ]+$/,
+  /^\/books\/[\w%\- ]+\/[\w%\- ]+$/,
 ]
 
 function isPublicPath(pathname: string): boolean {
