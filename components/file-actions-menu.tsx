@@ -1,7 +1,7 @@
 "use client"
 
 import { createClient } from "@/lib/supabase/client"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 
 interface Props {
@@ -18,6 +18,21 @@ export default function FileActionsMenu({ fileId }: Props) {
   const [reviewsOpen, setReviewsOpen] = useState(false)
   const [reviewsLoading, setReviewsLoading] = useState(false)
   const [reviews, setReviews] = useState<any[]>([])
+  const rootRef = useRef<HTMLDivElement | null>(null)
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (!rootRef.current) return
+      if (!rootRef.current.contains(e.target as Node)) {
+        setOpen(false)
+        setReviewOpen(false)
+        setReviewsOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", onDocClick)
+    return () => document.removeEventListener("mousedown", onDocClick)
+  }, [])
 
   const onReview = async () => {
     if (busy) return
@@ -26,7 +41,7 @@ export default function FileActionsMenu({ fileId }: Props) {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { alert("Please log in to review."); return }
       const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle()
-      if (!profile?.full_name) { alert("Please set your username in your Profile before reviewing."); return }
+      if (!profile?.full_name) { alert("PLS FIRST SET USERNAME FROM PROFILE"); return }
       const { error } = await supabase.from("file_reviews").insert({
         file_id: fileId,
         rating,
@@ -68,8 +83,22 @@ export default function FileActionsMenu({ fileId }: Props) {
   }
 
   return (
-    <div className="relative inline-block">
-      <Button variant="outline" size="sm" disabled={busy} onClick={() => setOpen((v) => !v)}>
+    <div className="relative inline-block" ref={rootRef}>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={busy}
+        onClick={() => {
+          setOpen((v) => {
+            const next = !v
+            if (!next) {
+              setReviewOpen(false)
+              setReviewsOpen(false)
+            }
+            return next
+          })
+        }}
+      >
         More
       </Button>
       {open && (
