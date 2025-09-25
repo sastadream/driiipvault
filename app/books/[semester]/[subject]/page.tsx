@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import BookUpload from "@/components/book-upload"
 import DeleteFileButton from "@/components/delete-file-button"
+import FileActionsMenu from "@/components/file-actions-menu"
 
 interface Props { params: Promise<{ semester: string; subject: string }> }
 
@@ -26,7 +27,12 @@ export default async function BooksSubjectPage({ params }: Props) {
   const withUrls = await Promise.all(
     (files || []).map(async (f) => {
       const { data: pub } = await supabase.storage.from("files").getPublicUrl(f.file_path)
-      return { ...f, publicUrl: pub.publicUrl }
+      const { data: revs } = await supabase
+        .from("file_reviews")
+        .select("rating, review_text, user_id, created_at, profiles:profiles!file_reviews_user_id_fkey(full_name)")
+        .eq("file_id", f.id)
+        .order("created_at", { ascending: false })
+      return { ...f, publicUrl: pub.publicUrl, reviews: revs || [] }
     })
   )
 
@@ -62,12 +68,25 @@ export default async function BooksSubjectPage({ params }: Props) {
                         <div>Size: {file.file_size ? `${(file.file_size / 1024).toFixed(1)} KB` : 'Unknown'}</div>
                         <div>Type: {file.mime_type || 'Unknown'}</div>
                         <div>Uploaded: {new Date(file.created_at).toLocaleDateString()}</div>
+                        {Array.isArray(file.reviews) && file.reviews.length > 0 && (
+                          <div className="text-xs text-muted-foreground space-y-1">
+                            <div className="font-medium text-foreground">Reviews</div>
+                            {file.reviews.map((r: any, idx: number) => (
+                              <div key={idx}>
+                                <span className="text-yellow-600">{"★".repeat(r.rating)}</span>
+                                <span className="ml-2 text-foreground">{r.profiles?.full_name || "Anonymous"}</span>
+                                {r.review_text && <span className="ml-2">- {r.review_text}</span>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                       <div className="flex gap-2">
                         <a href={file.publicUrl} target="_blank" rel="noopener noreferrer" className="w-full">
                           <Button variant="outline" size="sm" className="w-full">View</Button>
                         </a>
                         <DeleteFileButton table="books_files" id={file.id} filePath={file.file_path} />
+                        <FileActionsMenu fileId={file.id} />
                       </div>
                     </div>
                   </CardContent>
@@ -76,7 +95,7 @@ export default async function BooksSubjectPage({ params }: Props) {
             </div>
             <div className="mt-6">
               <p className="text-sm text-red-600">
-                IF THE FILE YOU WANT IS NOT HERE! JUST CONTACT US — WE WILL ADD THAT FILE WITHIN 2 HOURS. WhatsApp - 6353676040
+                IF ANY FILE IS MISSING OR THERE'S MISTAKE IN IT - CONTACT US ON WHATSAPP - 6353676040
               </p>
             </div>
           </>
@@ -88,7 +107,7 @@ export default async function BooksSubjectPage({ params }: Props) {
               There are no files available for {subject} at the moment.
             </p>
             <p className="text-sm text-red-600 mb-6">
-              IF THE FILE YOU WANT IS NOT HERE! JUST CONTACT US — WE WILL ADD THAT FILE WITHIN 2 HOURS. WhatsApp - 6353676040
+              IF ANY FILE IS MISSING OR THERE'S MISTAKE IN IT - CONTACT US ON WHATSAPP - 6353676040
             </p>
             <div className="flex gap-4 justify-center">
               <Link href={`/books/${encodeURIComponent(semester)}`}>

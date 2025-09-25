@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import ProfileUsernameForm from "@/components/profile-username-form"
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -43,6 +44,16 @@ export default async function ProfilePage() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Username</CardTitle>
+              <CardDescription>Set the name that will be shown with your reviews</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ProfileUsernameForm />
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>⭐ Favorite Colleges</CardTitle>

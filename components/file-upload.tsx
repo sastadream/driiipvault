@@ -89,7 +89,7 @@ export function FileUpload({ subjectId }: FileUploadProps) {
       setUploadProgress(100)
 
       // Show success popup
-      alert("Thank you for uploading the file!")
+      alert("Thank you for uploading the file!\nWrong file? No worry — contact the support team!")
 
       // Reset form
       setFile(null)

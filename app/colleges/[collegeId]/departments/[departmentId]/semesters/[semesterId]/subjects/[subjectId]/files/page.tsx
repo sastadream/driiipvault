@@ -6,6 +6,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { FavoriteButton } from "@/components/favorite-button"
 import DeleteFileButton from "@/components/delete-file-button"
+import FileActionsMenu from "@/components/file-actions-menu"
 
 interface SubjectFilesPageProps {
   params: Promise<{ collegeId: string; departmentId: string; semesterId: string; subjectId: string }>
@@ -45,7 +46,13 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
   const files = await Promise.all(
     (filesRaw || []).map(async (f) => {
       const { data: pub } = await supabase.storage.from("files").getPublicUrl(f.file_path)
-      return { ...f, publicUrl: pub.publicUrl }
+      // reviews for this file
+      const { data: revs } = await supabase
+        .from("file_reviews")
+        .select("rating, review_text, user_id, created_at, profiles:profiles!file_reviews_user_id_fkey(full_name)")
+        .eq("file_id", f.id)
+        .order("created_at", { ascending: false })
+      return { ...f, publicUrl: pub.publicUrl, reviews: revs || [] }
     })
   )
 
@@ -94,7 +101,20 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
                       <FavoriteButton entityType="file" entityId={file.id} />
                       {/* Admin-only delete is enforced by RLS, button will error for non-admins */}
                       <DeleteFileButton table="files" id={file.id} filePath={file.file_path} />
+                      <FileActionsMenu fileId={file.id} />
                     </div>
+                    {Array.isArray(file.reviews) && file.reviews.length > 0 && (
+                      <div className="text-xs text-muted-foreground space-y-1">
+                        <div className="font-medium text-foreground">Reviews</div>
+                        {file.reviews.map((r: any, idx: number) => (
+                          <div key={idx}>
+                            <span className="text-yellow-600">{"★".repeat(r.rating)}</span>
+                            <span className="ml-2 text-foreground">{r.profiles?.full_name || "Anonymous"}</span>
+                            {r.review_text && <span className="ml-2">- {r.review_text}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -102,7 +122,7 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
           </div>
           <div className="mt-6">
             <p className="text-sm text-red-600">
-              IF THE FILE YOU WANT IS NOT HERE! JUST CONTACT US — WE WILL ADD THAT FILE WITHIN 2 HOURS. WhatsApp - 6353676040
+              IF ANY FILE IS MISSING OR THERE'S MISTAKE IN IT - CONTACT US ON WHATSAPP - 6353676040
             </p>
           </div>
           </>
@@ -114,7 +134,7 @@ export default async function SubjectFilesPage({ params }: SubjectFilesPageProps
               There are no files available for {subject.name} at the moment.
             </p>
             <p className="text-sm text-red-600 mb-6">
-              IF THE FILE YOU WANT IS NOT HERE! JUST CONTACT US — WE WILL ADD THAT FILE WITHIN 2 HOURS. WhatsApp - 6353676040
+              IF ANY FILE IS MISSING OR THERE'S MISTAKE IN IT - CONTACT US ON WHATSAPP - 6353676040
             </p>
             <div className="flex gap-4 justify-center">
               <Link href={`/upload?subject_id=${subjectId}`}>
